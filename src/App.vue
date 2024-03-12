@@ -6,7 +6,7 @@ import DataBasePanel from './components/DataBasePanel.vue';
 
 <template>
   <el-container>
-    <el-aside width="200px">
+    <el-aside width="300px">
       <DataBasePanel />
     </el-aside>
     <el-main>Main</el-main>

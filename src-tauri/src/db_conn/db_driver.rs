@@ -13,6 +13,7 @@ pub trait DbDriver {
 
 #[derive(Debug, Serialize)]
 pub struct DbResult {
+    pub success: bool,
     pub start_time: u128,
     pub end_time: u128,
     pub query: String,
@@ -23,6 +24,7 @@ pub struct DbResult {
 impl DbResult {
     pub fn new(query: String) -> DbResult {
         Self {
+            success: true,
             start_time: SystemTime::now()
                 .duration_since(UNIX_EPOCH)
                 .unwrap()

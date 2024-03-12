@@ -139,6 +139,7 @@ impl DbDriver for MysqlDriver {
                         result.rows = Some(rows);
                     }
                     Err(error) => {
+                        result.success = false;
                         result.error = Some(error.to_string());
                     }
                 }

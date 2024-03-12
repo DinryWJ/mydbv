@@ -1,6 +1,6 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
-use std::{sync::Arc};
+use std::sync::Arc;
 
 use crossbeam::channel::unbounded;
 use dashmap::DashMap;
@@ -51,55 +51,79 @@ fn new_conn(
 
     let config = DbConfig::new(id, nickname, host, port, user, password, database, sql_type);
 
-    let (s, r) = unbounded();
+    let (tx_to_subthread, rx_from_main) = unbounded();
+    let (tx_to_main, rx_from_subthread) = unbounded();
     // let id = id;
-    let s2 = s.clone();
-    let r2 = r.clone();
-    let keeper = ThreadKeeper::new(id, s, r, move || {
-        let driver = MysqlDriver::new(&config.clone());
-        match driver {
-            Ok(d) => loop {
-                let message = r2.recv().unwrap();
-                println!("receive message: {}", message);
-                let message: Message =
-                    serde_json::from_str(&message).expect("Failed to parse Message");
-                let res = d.exec_result(&message.db, &message.sql);
-                let res = serde_json::to_string(&res).unwrap();
-                s2.send(res).unwrap();
-            },
-            Err(e) => {
-                let message = format!("connect failed: {}", e);
-                s2.send(message).unwrap()
+
+    let rx_from_main_clone = rx_from_main.clone();
+    let tx_to_main_clone = tx_to_main.clone();
+    let keeper = ThreadKeeper::new(
+        id,
+        tx_to_subthread,
+        rx_from_main_clone,
+        tx_to_main_clone,
+        rx_from_subthread,
+        move || {
+            let driver = MysqlDriver::new(&config.clone());
+            match driver {
+                Ok(d) => loop {
+                    let message = rx_from_main.recv().unwrap();
+                    println!("receive message: {}", message);
+                    let message: Message =
+                        serde_json::from_str(&message).expect("Failed to parse Message");
+                    let res = d.exec_result(&message.db, &message.sql);
+                    let res = serde_json::to_string(&res).unwrap();
+                    tx_to_main.send(res).unwrap();
+                },
+                Err(e) => {
+                    let message = format!("connect failed: {}", e);
+                    tx_to_main.send(message).unwrap()
+                }
             }
-        }
-    });
+        },
+    );
 
     state.rw.insert(uid, keeper);
     Ok("ok".to_string())
 }
 
 #[tauri::command]
-fn query(uid: String, db: String, sql: String, state: tauri::State<DbState>) -> Result<String, String> {
+fn query(
+    uid: String,
+    db: String,
+    sql: String,
+    state: tauri::State<DbState>,
+) -> Result<String, String> {
     let w = state.rw.get(&uid).unwrap();
 
-    match w.send_message(Message {
-        db,
-        sql,
-    }) {
+    match w.send_message(Message { db, sql }) {
         Ok(message) => Ok(message),
         Err(_) => Err("error".to_string()),
     }
 }
 
-
 #[tauri::command]
-fn show_databases(uid: String, state: tauri::State<DbState>) -> Result<String, String> {
+fn specific_query(uid: String, db: Option<String>, q_type: u8, state: tauri::State<DbState>) -> Result<String, String> {
     let w = state.rw.get(&uid).unwrap();
 
-    match w.send_message(Message {
-        db: "mysql".to_string(),
-        sql: "show databases".to_string(),
-    }) {
+    let mut message:Option<Message> = None;
+    if q_type == 1 {
+        message = Some(Message {
+            db: "mysql".to_string(),
+            sql: "show databases".to_string(),
+        });
+    } else if q_type == 2 {
+        message = Some(Message {
+            db: db.unwrap(),
+            sql: "show tables".to_string(),
+        });
+    }
+
+    if message.is_none(){
+        return Err("error".to_string());
+    }
+
+    match w.send_message(message.unwrap()) {
         Ok(message) => Ok(message),
         Err(_) => Err("error".to_string()),
     }
@@ -114,7 +138,8 @@ fn main() {
             greet,
             load_config,
             new_conn,
-            query
+            query,
+            specific_query
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
