@@ -2,14 +2,17 @@
 // This starter template is using Vue 3 <script setup> SFCs
 // Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
 import DataBasePanel from './components/DataBasePanel.vue';
+import MainPanel from './components/MainPanel.vue';
 </script>
 
 <template>
   <el-container>
-    <el-aside width="300px">
+    <el-aside width="30%">
       <DataBasePanel />
     </el-aside>
-    <el-main>Main</el-main>
+    <el-main>
+      <MainPanel />
+    </el-main>
   </el-container>
 </template>
 
@@ -36,5 +39,9 @@ body {
   height: 100%;
   width: 100%;
   overflow-y: auto;
+}
+
+.el-aside {
+  max-width: 300px;
 }
 </style>

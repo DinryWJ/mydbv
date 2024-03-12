@@ -60,7 +60,7 @@ async function specific_query(q_type, db, uid) {
                     id: id,
                     uid: uid,
                     label: Object.values(item.columns)[0],
-                    db: q_type === 1 ? item.columns.Database : null,
+                    db: q_type === 1 ? item.columns.Database : db,
                     q_type: q_type + 1,
                     children: [],
                     is_loaded: q_type === 1 ? false : true
@@ -103,7 +103,12 @@ function renderContent(h, { node, data, store }) {
 }
 
 function handleNodeDblclick(node, data) {
+    console.log(data);
+
     if (data.is_loaded) {
+        if (data.q_type === 3) {
+
+        }
         return;
     }
     if (data.q_type === 1) {
@@ -120,7 +125,6 @@ function handleNodeDblclick(node, data) {
             data.is_loaded = true;
         })
     }
-
 }
 
 
