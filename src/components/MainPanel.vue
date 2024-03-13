@@ -69,8 +69,17 @@ const handleTabsEdit = (
 </script>
 
 <style>
+.el-tabs {
+    height: 100%;
+}
+
+.el-tab-pane {
+    height: 100%;
+}
+
 .el-tabs__content {
     color: #6b778c;
+    height: 100%;
 }
 
 .el-tabs__new-tab {
@@ -83,11 +92,19 @@ const handleTabsEdit = (
     -webkit-user-select: none;
 }
 
+.vue-codemirror {
+    height: 100%;
+}
+
 .cm-editor {
     height: 100%;
 }
 
 .cm-line {
     text-align: left;
+}
+
+.cm-gutters {
+    background-color: transparent !important;
 }
 </style>

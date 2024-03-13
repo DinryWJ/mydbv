@@ -4,8 +4,8 @@ use std::sync::Arc;
 
 use crossbeam::channel::unbounded;
 use dashmap::DashMap;
-use db_conn::{config::DbConfig, db_driver::DbDriver, mysql_driver::MysqlDriver};
-use mydbv::{Message, ThreadKeeper};
+use db_conn::{config::DbConfig, message::Message, thread_keeper::ThreadKeeper};
+
 
 pub mod db_conn;
 
@@ -55,32 +55,15 @@ fn new_conn(
     let (tx_to_main, rx_from_subthread) = unbounded();
     // let id = id;
 
-    let rx_from_main_clone = rx_from_main.clone();
-    let tx_to_main_clone = tx_to_main.clone();
+    // let rx_from_main_clone = rx_from_main.clone();
+    // let tx_to_main_clone = tx_to_main.clone();
     let keeper = ThreadKeeper::new(
         id,
         tx_to_subthread,
-        rx_from_main_clone,
-        tx_to_main_clone,
+        rx_from_main,
+        tx_to_main,
         rx_from_subthread,
-        move || {
-            let driver = MysqlDriver::new(&config.clone());
-            match driver {
-                Ok(d) => loop {
-                    let message = rx_from_main.recv().unwrap();
-                    println!("receive message: {}", message);
-                    let message: Message =
-                        serde_json::from_str(&message).expect("Failed to parse Message");
-                    let res = d.exec_result(&message.db, &message.sql);
-                    let res = serde_json::to_string(&res).unwrap();
-                    tx_to_main.send(res).unwrap();
-                },
-                Err(e) => {
-                    let message = format!("connect failed: {}", e);
-                    tx_to_main.send(message).unwrap()
-                }
-            }
-        },
+        config,
     );
 
     state.rw.insert(uid, keeper);
@@ -129,6 +112,18 @@ fn specific_query(uid: String, db: Option<String>, q_type: u8, state: tauri::Sta
     }
 }
 
+#[tauri::command]
+fn destory(uid: String, state: tauri::State<DbState>) -> Result<String, String> {
+    let w = state.rw.get(&uid).unwrap();
+    state.rw.remove(&uid);
+
+    
+    match w.destory() {
+        Ok(message) => Ok(message),
+        Err(_) => Err("error".to_string()),
+    }
+}
+
 fn main() {
     let map = DashMap::new();
     let state = DbState { rw: Arc::new(map) };
@@ -139,7 +134,8 @@ fn main() {
             load_config,
             new_conn,
             query,
-            specific_query
+            specific_query,
+            destory
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

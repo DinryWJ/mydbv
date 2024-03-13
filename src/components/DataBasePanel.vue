@@ -3,6 +3,7 @@ import { ref, watch, onBeforeMount } from 'vue'
 import { ElTree } from 'element-plus'
 import { invoke } from "@tauri-apps/api/tauri";
 import { v4 as uuidv4 } from 'uuid';
+import { show } from '@tauri-apps/api/app';
 
 onBeforeMount(() => {
     load_config()
@@ -98,8 +99,19 @@ function renderContent(h, { node, data, store }) {
             width: '100%',
             textAlign: 'left'
         }
-    }, node.label);
-
+    }, node.label,
+        h(
+            'a',
+            {
+                onClick: () => disconnect(data),
+                style: {
+                    float: 'right',
+                    visibility: data.q_type === 1 && data.is_loaded ? 'visible' : 'hidden'
+                }
+            },
+            'disconnect'
+        )
+    )
 }
 
 function handleNodeDblclick(node, data) {
@@ -127,6 +139,10 @@ function handleNodeDblclick(node, data) {
     }
 }
 
+function disconnect(data) {
+    
+}
+
 
 </script>
 
@@ -135,7 +151,9 @@ function handleNodeDblclick(node, data) {
         <el-input v-model="filterText" style="width: 240px" placeholder="过滤" />
 
         <el-tree ref="treeRef" style="max-width: 600px" class="filter-tree" :props="defaultProps" :data="data"
-            :render-content="renderContent" :filter-node-method="filterNode" node-key="id" />
+            :render-content="renderContent" :filter-node-method="filterNode" node-key="id">
+
+        </el-tree>
 
     </el-scrollbar>
 </template>

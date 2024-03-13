@@ -49,5 +49,6 @@ body {
   padding: 0;
   margin-left: 10px;
   margin-right: 0px;
+  overflow: hidden;
 }
 </style>
