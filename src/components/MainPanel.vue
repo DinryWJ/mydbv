@@ -1,16 +1,30 @@
+<!-- ref https://logue.dev/vue-codemirror6/ -->
 <template>
-    <el-tabs v-model="editableTabsValue" type="card" class="demo-tabs" editable @edit="handleTabsEdit">
-        <template #add-icon>
-            <span>+</span>
-        </template>
+    <el-tabs v-model="editableTabsValue" type="card" editable @edit="handleTabsEdit">
         <el-tab-pane v-for="item in editableTabs" :key="item.name" :label="item.title" :name="item.name">
-            {{ item.content }}
+            <code-mirror ref="cm" v-model="input" :dark="dark" basic />
         </el-tab-pane>
     </el-tabs>
 </template>
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { ref, type Ref } from 'vue'
 import type { TabPaneName } from 'element-plus'
+
+import CodeMirror from 'vue-codemirror6';
+
+/** CodeMirror Instance */
+const cm: Ref<InstanceType<typeof CodeMirror> | undefined> = ref();
+
+/** Demo text */
+const input: Ref<string> = ref(`# The quick brown fox jumps over the lazy dog.
+
+[Lorem ipsum](https://www.lipsum.com/) dolor sit amet, **consectetur** adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.`);
+
+// Sync dark mode
+defineProps({ dark: Boolean });
 
 let tabIndex = 0
 const editableTabsValue = ref('0')
@@ -56,10 +70,7 @@ const handleTabsEdit = (
 
 <style>
 .el-tabs__content {
-    padding: 32px;
     color: #6b778c;
-    font-size: 32px;
-    font-weight: 600;
 }
 
 .el-tabs__new-tab {
@@ -70,5 +81,13 @@ const handleTabsEdit = (
 .el-tabs__item {
     user-select: none;
     -webkit-user-select: none;
+}
+
+.cm-editor {
+    height: 100%;
+}
+
+.cm-line {
+    text-align: left;
 }
 </style>

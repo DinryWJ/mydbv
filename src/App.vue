@@ -48,6 +48,6 @@ body {
 .el-main {
   padding: 0;
   margin-left: 10px;
-  margin-right: 20px;
+  margin-right: 0px;
 }
 </style>

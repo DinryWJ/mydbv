@@ -11,9 +11,11 @@
   },
   "dependencies": {
     "@tauri-apps/api": "^1.5.2",
+    "codemirror": "^6.0.1",
     "element-plus": "^2.6.1",
     "uuid": "^9.0.1",
-    "vue": "^3.3.4"
+    "vue": "^3.3.4",
+    "vue-codemirror6": "^1.2.5"
   },
   "devDependencies": {
     "@tauri-apps/cli": "^1.5.8",
