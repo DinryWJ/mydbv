@@ -1,4 +1,3 @@
-addIcon
 <template>
     <el-tabs v-model="editableTabsValue" type="card" class="demo-tabs" editable @edit="handleTabsEdit">
         <template #add-icon>

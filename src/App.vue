@@ -44,4 +44,10 @@ body {
 .el-aside {
   max-width: 300px;
 }
+
+.el-main {
+  padding: 0;
+  margin-left: 10px;
+  margin-right: 20px;
+}
 </style>
