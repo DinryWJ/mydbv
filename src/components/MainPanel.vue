@@ -12,20 +12,14 @@
 import { ref } from 'vue'
 import type { TabPaneName } from 'element-plus'
 
-let tabIndex = 2
-const editableTabsValue = ref('2')
-const editableTabs = ref([
-    {
-        title: 'Tab 1',
-        name: '1',
-        content: 'Tab 1 content',
-    },
-    {
-        title: 'Tab 2',
-        name: '2',
-        content: 'Tab 2 content',
-    },
-])
+let tabIndex = 0
+const editableTabsValue = ref('0')
+const editableTabs = ref<{
+    title: string;
+    name: string;
+    content: string,
+    type: string,
+}[]>([])
 
 const handleTabsEdit = (
     targetName: TabPaneName | undefined,
@@ -35,6 +29,7 @@ const handleTabsEdit = (
         const newTabName = `${++tabIndex}`
         editableTabs.value.push({
             title: 'New Tab',
+            type: 'query',
             name: newTabName,
             content: 'New Tab content',
         })
@@ -58,11 +53,22 @@ const handleTabsEdit = (
     }
 }
 </script>
+
 <style>
-.demo-tabs>.el-tabs__content {
+.el-tabs__content {
     padding: 32px;
     color: #6b778c;
     font-size: 32px;
     font-weight: 600;
+}
+
+.el-tabs__new-tab {
+    margin: 10px 10px 10px 10px;
+    float: left;
+}
+
+.el-tabs__item {
+    user-select: none;
+    -webkit-user-select: none;
 }
 </style>
