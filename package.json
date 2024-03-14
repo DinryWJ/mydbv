@@ -15,7 +15,8 @@
     "element-plus": "^2.6.1",
     "uuid": "^9.0.1",
     "vue": "^3.3.4",
-    "vue-codemirror6": "^1.2.5"
+    "vue-codemirror6": "^1.2.5",
+    "vue-router": "4"
   },
   "devDependencies": {
     "@tauri-apps/cli": "^1.5.8",
