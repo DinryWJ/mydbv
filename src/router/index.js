@@ -1,33 +1,29 @@
-// src/router/index.js
-import { createRouter, createWebHistory } from 'vue-router';
+import { createRouter, createWebHistory, createWebHashHistory  } from 'vue-router';
 import Home from '../views/Home.vue';
 import About from '../views/About.vue';
 import NotFound from '../views/NotFound.vue';
 import Query from '../views/Query.vue';
 const routes = [
     {
-        path: '/',
-        name: 'Home',
+        path: '/home',
         component: Home
     },
     {
         path: '/about',
-        name: 'About',
         component: About
     },
     {
         path: '/query',
-        name: 'Query',
         component: Query
     },
     {
         path: '/:catchAll(.*)',
         component: NotFound
-    }
+      },
 ];
 
 const router = createRouter({
-    history: createWebHistory(),
+    history: createWebHashHistory(),
     routes
 });
 

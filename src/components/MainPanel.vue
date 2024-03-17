@@ -1,7 +1,7 @@
 <template>
     <el-tabs v-model="editableTabsValue" type="card" editable @edit="handleTabsEdit">
-        <el-tab-pane v-for="item in editableTabs" :key="item.name" :label="item.title" :name="item.name">
-            <router-link :to="{ name: item.name }">{{ item.title }}</router-link>
+        <el-tab-pane v-for="item in editableTabs" :label="item.name" :name="item.name">
+            <component :is="item.component" :key="item.name"></component>
         </el-tab-pane>
     </el-tabs>
 </template>
@@ -10,13 +10,13 @@
 <script lang="ts" setup>
 import { ref, type Ref } from 'vue'
 import type { TabPaneName } from 'element-plus'
+import Query from '../views/Query.vue';
 
-
-let tabIndex = 2
-const editableTabsValue = ref('2')
+let tabIndex = 0
+const editableTabsValue = ref('0')
 const editableTabs = ref<{
     name: string,
-    type: string
+    component: any 
 }[]>([])
 
 const handleTabsEdit = (
@@ -25,11 +25,12 @@ const handleTabsEdit = (
 ) => {
     if (action === 'add') {
         const newTabName = `${++tabIndex}`
+        let name = 'Query' + newTabName;
         editableTabs.value.push({
-            title: 'Query',
-            name: 'Query'
+            name: name,
+            component: Query
         })
-        editableTabsValue.value = newTabName
+        editableTabsValue.value = name
     } else if (action === 'remove') {
         const tabs = editableTabs.value
         let activeName = editableTabsValue.value
@@ -51,9 +52,11 @@ const handleTabsEdit = (
 </script>
 
 <style>
-.el-tabs {
-    height: 100%;
+.el-tabs--card {
+  height: calc(100vh);
+  overflow: hidden;
 }
+
 
 .el-tab-pane {
     height: 100%;

@@ -3,7 +3,6 @@ import { ref, watch, onBeforeMount } from 'vue'
 import { ElTree } from 'element-plus'
 import { invoke } from "@tauri-apps/api/tauri";
 import { v4 as uuidv4 } from 'uuid';
-import { show } from '@tauri-apps/api/app';
 
 onBeforeMount(() => {
     load_config()
@@ -99,18 +98,7 @@ function renderContent(h, { node, data, store }) {
             width: '100%',
             textAlign: 'left'
         }
-    }, node.label,
-        h(
-            'a',
-            {
-                onClick: () => disconnect(data),
-                style: {
-                    float: 'right',
-                    visibility: data.q_type === 1 && data.is_loaded ? 'visible' : 'hidden'
-                }
-            },
-            'disconnect'
-        )
+    }, node.label
     )
 }
 

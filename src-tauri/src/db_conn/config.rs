@@ -2,8 +2,9 @@ use serde::{Deserialize, Serialize};
 use std::{
     env,
     fs::File,
-    io::{Error, Read},
+    io::Read, path::PathBuf,
 };
+use std::error::Error;
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct DbConfig {
@@ -43,11 +44,14 @@ impl DbConfig {
         }
     }
 
-    pub fn load() -> Result<Vec<DbConfig>, Error> {
+    pub fn load() -> Result<Vec<DbConfig>, Box<dyn Error>> {
         let manifest_dir = env!("CARGO_MANIFEST_DIR");
-        let file_path = format!("{}/config/db.json", manifest_dir);
-        println!("load db config from : {:?}", file_path);
-
+        let mut file_path = PathBuf::from(manifest_dir);
+        file_path.push("config");
+        file_path.push("db.json");
+    
+        println!("load db config from: {:?}", file_path);
+        
         let mut file = File::open(&file_path)?;
 
         let mut contents = String::new();
