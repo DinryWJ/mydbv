@@ -1,5 +1,5 @@
 <template>
-    <el-tabs v-model="editableTabsValue" type="card" editable @edit="handleTabsEdit">
+    <el-tabs style="width: 100%;" v-model="editableTabsValue" type="card" editable @edit="handleTabsEdit">
         <el-tab-pane v-for="item in editableTabs" :label="item.name" :name="item.name">
             <component :is="item.component" :key="item.name"></component>
         </el-tab-pane>
@@ -16,7 +16,7 @@ let tabIndex = 0
 const editableTabsValue = ref('0')
 const editableTabs = ref<{
     name: string,
-    component: any 
+    component: any
 }[]>([])
 
 const handleTabsEdit = (
@@ -53,8 +53,8 @@ const handleTabsEdit = (
 
 <style>
 .el-tabs--card {
-  height: calc(100vh);
-  overflow: hidden;
+    height: calc(100vh);
+    overflow: hidden;
 }
 
 

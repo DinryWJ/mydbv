@@ -128,7 +128,7 @@ function handleNodeDblclick(node, data) {
 }
 
 function disconnect(data) {
-    
+
 }
 
 
@@ -136,7 +136,7 @@ function disconnect(data) {
 
 <template>
     <el-scrollbar>
-        <el-input v-model="filterText" style="width: 240px" placeholder="过滤" />
+        <el-input v-model="filterText" style="width: 100%" placeholder="过滤" />
 
         <el-tree ref="treeRef" style="max-width: 600px" class="filter-tree" :props="defaultProps" :data="data"
             :render-content="renderContent" :filter-node-method="filterNode" node-key="id">

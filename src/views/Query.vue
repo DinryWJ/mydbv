@@ -1,6 +1,17 @@
 <template>
     <div class="wrap">
-        <code-mirror class="top" :style="{ height: topHeight + 'vh' }" ref="cm" v-model="input" :dark="dark" basic />
+        <div class="query-options">
+            <el-select class="top-select" v-model="selectConn" placeholder="choose connection" size="small">
+                <el-option filterable v-for="item in activeConnList" :key="item.value" :label="item.label"
+                    :value="item.value" />
+            </el-select>
+            <el-select class="top-select" v-model="selectDb" placeholder="choose db" size="small">
+                <el-option filterable v-for="item in activeDbList" :key="item.value" :label="item.label"
+                    :value="item.value" />
+            </el-select>
+        </div>
+        <code-mirror class="top" :style="{ height: `calc(${topHeight}vh - 70px)` }" ref="cm" v-model="input"
+            :dark="dark" basic />
         <div class="resize-bar" @mousedown="startResize">
             <!-- Resize bar -->
         </div>
@@ -19,7 +30,7 @@ import CodeMirror from 'vue-codemirror6';
 
 const cm: Ref<InstanceType<typeof CodeMirror> | undefined> = ref();
 
-const input: Ref<string> = ref(`# The quick brown fox jumps over the lazy dog.`);
+const input: Ref<string> = ref(`# select * from mysql;`);
 
 defineProps({ dark: Boolean });
 
@@ -61,8 +72,28 @@ const tableData = [
     },
 ]
 
-const topHeight = ref(70);
-const bottomHeight = ref(30);
+const selectConn = ref('')
+const activeConnList = [
+    {
+        value: 'Option1',
+        label: 'Option1',
+    },
+]
+
+const selectDb = ref('')
+const activeDbList = [
+    {
+        value: 'Option1',
+        label: 'Option1',
+    },
+    {
+        value: 'Option2',
+        label: 'Option2',
+    },
+]
+
+const topHeight = ref(68);
+const bottomHeight = ref(35);
 let isResizing = false;
 let startY = 0;
 
@@ -119,8 +150,18 @@ const stopResize = () => {
 }
 
 .resize-bar {
-    height: 10px;
+    height: 4px;
     cursor: ns-resize;
     background-color: #ccc;
+}
+
+.query-options {
+    display: flex;
+    margin-bottom: 10px;
+}
+
+.top-select {
+    width: 120px;
+    margin-right: 20px;
 }
 </style>
