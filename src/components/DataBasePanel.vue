@@ -3,6 +3,7 @@ import { ref, watch, onBeforeMount } from 'vue'
 import { ElTree } from 'element-plus'
 import { invoke } from "@tauri-apps/api/tauri";
 import { v4 as uuidv4 } from 'uuid';
+import { defineStore } from 'pinia';
 
 onBeforeMount(() => {
     load_config()
@@ -135,15 +136,13 @@ function disconnect(data) {
 </script>
 
 <template>
-    <el-scrollbar>
-        <el-input v-model="filterText" style="width: 100%" placeholder="过滤" />
-
+    <el-input v-model="filterText" style="width: 100%; height: 5vh;" placeholder="过滤" />
+    <el-scrollbar height="95vh">
         <el-tree ref="treeRef" style="max-width: 600px" class="filter-tree" :props="defaultProps" :data="data"
             :render-content="renderContent" :filter-node-method="filterNode" node-key="id">
-
         </el-tree>
-
     </el-scrollbar>
+
 </template>
 
 

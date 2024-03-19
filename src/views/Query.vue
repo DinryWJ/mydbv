@@ -15,16 +15,19 @@
         <div class="resize-bar" @mousedown="startResize">
             <!-- Resize bar -->
         </div>
-        <el-table class="bottom" :data="tableData" :style="{ height: bottomHeight + 'vh' }">
-            <el-table-column prop="date" label="Date" width="180" />
-            <el-table-column prop="name" label="Name" width="180" />
-            <el-table-column prop="address" label="Address" />
+        <el-table :data="tableData" style="width: 100%">
+            <el-table-column v-for="column in tableColumns" :key="column.prop" :prop="column.prop" :label="column.label"
+                :width="column.width">
+                <template #default="scope">
+                    <el-input class="no-border" v-model="scope.row[column.prop]"></el-input>
+                </template>
+            </el-table-column>
         </el-table>
     </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, type Ref } from 'vue'
+import { ref, type Ref, onMounted } from 'vue'
 
 import CodeMirror from 'vue-codemirror6';
 
@@ -34,43 +37,35 @@ const input: Ref<string> = ref(`# select * from mysql;`);
 
 defineProps({ dark: Boolean });
 
-const tableData = [
+
+const tableData = ref([
     {
-        date: '2016-05-03',
-        name: 'Tom',
-        address: 'No. 189, Grove St, Los Angeles',
+        id: 1,
+        date: '2020-05-02',
+        name: 'John Smith',
+        address: 'No.1518,  Jinshajiang Road, Putuo District'
     },
     {
-        date: '2016-05-02',
-        name: 'Tom',
-        address: 'No. 189, Grove St, Los Angeles',
+        id: 1,
+        date: '2020-05-02',
+        name: 'John Smith',
+        address: 'No.1518,  Jinshajiang Road, Putuo District'
     },
-    {
-        date: '2016-05-04',
-        name: 'Tom',
-        address: 'No. 189, Grove St, Los Angeles',
-    },
-    {
-        date: '2016-05-01',
-        name: 'Tom',
-        address: 'No. 189, Grove St, Los Angeles',
-    },
-    {
-        date: '2016-05-08',
-        name: 'Tom',
-        address: 'No. 189, Grove St, Los Angeles',
-    },
-    {
-        date: '2016-05-06',
-        name: 'Tom',
-        address: 'No. 189, Grove St, Los Angeles',
-    },
-    {
-        date: '2016-05-07',
-        name: 'Tom',
-        address: 'No. 189, Grove St, Los Angeles',
-    },
-]
+    // ...更多数据
+])
+
+let tableColumns = ref([]);
+
+const generateTableColumns = () => {
+    if (tableData.value.length > 0) {
+        const firstRow = tableData.value[0];
+        tableColumns.value = Object.keys(firstRow).map(key => {
+            return { prop: key, label: key.charAt(0).toUpperCase() + key.slice(1), width: '180px' };
+        });
+    }
+};
+
+onMounted(generateTableColumns); // Call generateTableColumns on component mount
 
 const selectConn = ref('')
 const activeConnList = [
@@ -121,18 +116,8 @@ const stopResize = () => {
 </script>
 
 <style>
-.wrap {
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-}
-
-.vue-codemirror {
-    height: 100%;
-}
-
 .cm-editor {
-    width: 100%;
+    width: 100% !important;
     overflow-y: auto;
 }
 
@@ -142,6 +127,22 @@ const stopResize = () => {
 
 .cm-gutters {
     background-color: transparent;
+}
+</style>
+<style scoped>
+.no-border :deep(.el-input__wrapper) {
+    background-color: #FFFFFF;
+    box-shadow: 0 0 0 0;
+}
+
+.wrap {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.vue-codemirror {
+    height: 100%;
 }
 
 .top,

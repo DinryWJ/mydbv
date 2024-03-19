@@ -50,18 +50,6 @@ const stopDrag = () => {
 body {
   margin: 0;
   position: relative;
-  display: flex;
-  overflow: hidden;
-  place-items: center;
-}
-
-#app {
-  text-align: center;
-  height: 100vh;
-  width: 100vw;
-  position: fixed;
-  top: 0;
-  bottom: 0;
   overflow: hidden;
 }
 
@@ -75,6 +63,17 @@ body {
   position: relative;
   overflow: hidden;
 }
+</style>
+<style scoped>
+#app {
+  height: 100vh;
+  width: 100vw;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  overflow: hidden;
+}
+
 
 .handle {
   position: absolute;
