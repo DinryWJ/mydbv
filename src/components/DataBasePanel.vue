@@ -3,7 +3,9 @@ import { ref, watch, onBeforeMount } from 'vue'
 import { ElTree } from 'element-plus'
 import { invoke } from "@tauri-apps/api/tauri";
 import { v4 as uuidv4 } from 'uuid';
-import { defineStore } from 'pinia';
+import { useActivateDatabaseStore } from '../stores/activateDatabase'
+
+const activateDatabase = useActivateDatabaseStore()
 
 onBeforeMount(() => {
     load_config()
@@ -118,6 +120,7 @@ function handleNodeDblclick(node, data) {
             specific_query(data.q_type, data.db, data.uid).then((children) => {
                 data.children = children;
                 data.is_loaded = true;
+                activateDatabase.addActiveDatabase(data)
             })
         })
     } else if (data.q_type === 2) {
@@ -136,9 +139,14 @@ function disconnect(data) {
 </script>
 
 <template>
-    <el-input v-model="filterText" style="width: 100%; height: 5vh;" placeholder="过滤" />
+    <div style="display: flex; align-items: center; padding: 10px;">
+        <el-input v-model="filterText" style="width: 80%; margin-left: 10px; margin-right: 10px;"
+            placeholder="filter" />
+        <el-button icon="Plus"></el-button>
+        <el-button icon="Setting"></el-button>
+    </div>
     <el-scrollbar height="95vh">
-        <el-tree ref="treeRef" style="max-width: 600px" class="filter-tree" :props="defaultProps" :data="data"
+        <el-tree ref="treeRef" style="max-width: 600px;" class="filter-tree" :props="defaultProps" :data="data"
             :render-content="renderContent" :filter-node-method="filterNode" node-key="id">
         </el-tree>
     </el-scrollbar>

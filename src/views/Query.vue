@@ -2,8 +2,8 @@
     <div class="wrap">
         <div class="query-options">
             <el-select class="top-select" v-model="selectConn" placeholder="choose connection" size="small">
-                <el-option filterable v-for="item in activeConnList" :key="item.value" :label="item.label"
-                    :value="item.value" />
+                <el-option filterable v-for="item in activeConnList" :key="item.id" :label="item.label"
+                    :value="item.label" />
             </el-select>
             <el-select class="top-select" v-model="selectDb" placeholder="choose db" size="small">
                 <el-option filterable v-for="item in activeDbList" :key="item.value" :label="item.label"
@@ -28,8 +28,8 @@
 
 <script lang="ts" setup>
 import { ref, type Ref, onMounted } from 'vue'
-
 import CodeMirror from 'vue-codemirror6';
+import { useActivateDatabaseStore } from '../stores/activateDatabase';
 
 const cm: Ref<InstanceType<typeof CodeMirror> | undefined> = ref();
 
@@ -54,7 +54,13 @@ const tableData = ref([
     // ...更多数据
 ])
 
-let tableColumns = ref([]);
+interface TableColumn {
+    prop: string;
+    label: string;
+    width: string;
+}
+
+let tableColumns = ref<TableColumn[]>([]);
 
 const generateTableColumns = () => {
     if (tableData.value.length > 0) {
@@ -68,12 +74,8 @@ const generateTableColumns = () => {
 onMounted(generateTableColumns); // Call generateTableColumns on component mount
 
 const selectConn = ref('')
-const activeConnList = [
-    {
-        value: 'Option1',
-        label: 'Option1',
-    },
-]
+const activateDatabase = useActivateDatabaseStore();
+const activeConnList = activateDatabase.getAll();
 
 const selectDb = ref('')
 const activeDbList = [

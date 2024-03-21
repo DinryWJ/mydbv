@@ -38,9 +38,9 @@ const stopDrag = () => {
   <el-container>
     <el-aside :style="{ width: asideWidth + 'px' }">
       <DataBasePanel />
-      <div class="handle" @mousedown="startDrag"></div>
     </el-aside>
     <el-main>
+      <div class="handle" :style="{ left: asideWidth + 'px' }" @mousedown="startDrag"></div>
       <MainPanel />
     </el-main>
   </el-container>
@@ -77,12 +77,19 @@ body {
 
 .handle {
   position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  width: 1px;
-  background-color: #ccc;
+  top: 50%;
+  width: 5px;
+  height: 80%;
+  transition: background-color 0.3s ease;
+  /* 添加过渡效果 */
+  z-index: 40;
+  transform: translate(-50%, -50%);
+  background-color: #f4f4f4;
   cursor: col-resize;
+}
+
+.handle:hover {
+  background-color: #ccc;
 }
 
 .el-main {
