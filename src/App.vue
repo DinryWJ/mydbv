@@ -79,10 +79,10 @@ body {
   position: absolute;
   top: 50%;
   width: 5px;
-  height: 80%;
+  height: 100%;
   transition: background-color 0.3s ease;
   /* 添加过渡效果 */
-  z-index: 40;
+  z-index: 50;
   transform: translate(-50%, -50%);
   background-color: #f4f4f4;
   cursor: col-resize;
@@ -94,7 +94,5 @@ body {
 
 .el-main {
   padding: 0;
-  margin-left: 10px;
-  margin-right: 0px;
 }
 </style>

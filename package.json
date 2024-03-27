@@ -12,12 +12,10 @@
   "dependencies": {
     "@element-plus/icons-vue": "^2.3.1",
     "@tauri-apps/api": "^1.5.2",
-    "codemirror": "^6.0.1",
     "element-plus": "^2.6.1",
     "pinia": "^2.1.7",
     "uuid": "^9.0.1",
     "vue": "^3.3.4",
-    "vue-codemirror6": "^1.2.5",
     "vue-router": "4"
   },
   "devDependencies": {
